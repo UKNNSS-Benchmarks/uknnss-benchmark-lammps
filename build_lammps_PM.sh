@@ -47,8 +47,8 @@ rm -rf *
 cmake \
     -D CMAKE_BUILD_TYPE=Release \
     -D CMAKE_Fortran_COMPILER=ftn \
-    -D CMAKE_C_COMPILER=cc \
-    -D CMAKE_CXX_COMPILER=CC \
+    -D CMAKE_C_COMPILER=mpicc \
+    -D CMAKE_CXX_COMPILER=mpic++ \
     -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
     -D LAMMPS_EXCEPTIONS=on \
     -D BUILD_SHARED_LIBS=on \
