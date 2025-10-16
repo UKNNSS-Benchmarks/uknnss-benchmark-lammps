@@ -21,7 +21,7 @@ INSTALL_PREFIX="${HOME_BASE}/install_PM"
 
 # Clone just the stable branch of LAMMPS if not already cloned.
 if [ ! -d ${LAMMPS_SRC} ]; then
-    git clone --single-branch --branch stable https://github.com/lammps/lammps.git --depth 1 ${LAMMPS_SRC}
+    git clone  --depth 1 --single-branch --branch stable https://github.com/lammps/lammps.git ${LAMMPS_SRC}
 fi
 
 # Enter the lammps directory.
