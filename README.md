@@ -55,9 +55,17 @@ Stable
 
 ### Permitted modifications
 
-Below is a list of permitted modifications:
+#### Baseline build
 
-- Only modify the LAMMPS or Kokkos source code to resolve unavoidable compilation or runtime errors
+For the baseline run the only permitted modifications allowed are those that
+modify the LAMMPS or Kokkos source code to resolve unavoidable compilation or
+runtime errors.
+
+#### Optimised build
+
+Any modifications to the source code are allowed as long as they are able to be provided
+back to the community under the same licence as is used for the software package that is
+being modified.
 
 ### Manual build
 
