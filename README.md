@@ -126,13 +126,13 @@ Spack can also be used to build LAMMPS. For example, the
 configuration to build the required version of LAMMPS on the IsambardAI system is available in this
 repository.
 
-- [IsambardAI Spack environment configuration for LAMMPS benchmark](isambard_ai_spack.yaml)
+- [IsambardAI Spack environment configuration for LAMMPS benchmark](./isambard_ai_spack.yaml)
 
 ## Running the benchmark
 
 Input files and batch scripts for seven (7) problem sizes are provided in the benchmarks directory.
 Responses should provide results (measured or projected) for the "target" problem size.
-Reference values from [AIRR IsambardAI system]() were evaluated using the "reference" problem size.
+Reference values from [AIRR IsambardAI system](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2) were evaluated using the "reference" problem size.
 Other problem sizes  have been provided as a convenience to facilitate profiling at different
 scales (e.g. socket, node, blade or rack), and extrapolation to larger sizes.
 
