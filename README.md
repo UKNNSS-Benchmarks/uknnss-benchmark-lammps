@@ -40,17 +40,6 @@ Stable
 
 [https://github.com/lammps/lammps](https://github.com/lammps/lammps)
 
-### Architectures
-
-- CPU: x86, Arm
-- GPU: NVIDIA, AMD, Intel
-
-### Languages and programming models
-
-- Programming languages: C++
-- Parallel models: MPI, OpenMP
-- Accelerator offload models: Kokkos
-
 ## Building the benchmark
 
 ### Permitted modifications
