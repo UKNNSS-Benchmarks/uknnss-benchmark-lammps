@@ -10,21 +10,9 @@ for the UK NNSS procurement.
 
 ## Benchmark Overview
 
-A fundamental challenge for molecular dynamics (MD) simulation is to propagate the dynamics for a sufficiently long simulated time to sample all of the relevant molecular configurations.  Historical MD workflows have therefore consisted of long-running jobs (or sequences of jobs), where each time-step may be accelerated by disributing atoms across parallel processing units, but the series of time-steps progresses sequentially. Recent advances in MD sampling effectively provide routes to parallelize the time dimension of the simulation as well.  
+A fundamental challenge for molecular dynamics (MD) simulation is to propagate the dynamics for a sufficiently long simulated time to sample all of the relevant molecular configurations.  Historical MD workflows have therefore consisted of long-running jobs (or sequences of jobs), where each time-step may be accelerated by disributing atoms across parallel processing units, but the series of time-steps progresses sequentially. Recent advances in MD sampling effectively provide routes to parallelise the time dimension of the simulation as well.  
 
-EXAALT is an US ECP project aimed at enabling long-timescale MD through a combination of software optimisation to enable excellent performance on exascale architectures and the advanced sampling methods mentioned above. 
-One of the possible EXAALT workflows uses ParSplice to manage multiple instances of the LAMMPS MD engine.
-
-<img width="49%" alt="EXAALT workflow"    src="figures/exaalt_workflow.png"    title="EXAALT workflow" >
-<img width="49%" alt="EXAALT decorrelate" src="figures/exaalt_decorrelate.png" title="EXAALT decorrelate" >
-
-An individual LAMMPS job is relatively brief, and ParSplice provides a hierarchical task management layer that uses physics-based criteria to select which configurations to in order to efficiently explore the potential energy surface.  More information about EXAALT, ParSplice and LAMMPS can be found at:
-- EXAALT:    https://www.exascaleproject.org/research-project/exaalt/
-- ParSplice: https://doi.org/10.1021/acs.jctc.5b00916
-- LAMMPS:     https://doi.org/10.1016/j.cpc.2021.108171 
-
-The Materials by Design workflow benchmark is based on  the ParSplice +  LAMMPS workflow, 
-but the ParSplice workflow engine is not involved in the benchmark because it would add significant complexity in compiling, running and performance analysis of the simulations.  Instead, the benchmark consists of a single run of the LAMMPS MD package, which is the performance critical component of the workflow, typically using over 95% of the EXAALT runtime. The benchmark problem simulates the high-pressure BC8 phase of carbon using the Spectral Neighbor Analysis Potential (SNAP). LAMMPS's highly optimized implementation of the SNAP potential was written using the Kokkos portability layer, as described in: https://doi.org/10.1145/3458817.3487400
+This benchmark consists of a single run of the LAMMPS MD package, which is the performance critical component of such simulation workflows. The benchmark problem simulates the high-pressure BC8 phase of carbon using the Spectral Neighbor Analysis Potential (SNAP). LAMMPS's highly optimized implementation of the SNAP potential was written using the Kokkos portability layer, as described in: https://doi.org/10.1145/3458817.3487400
 
 ## Status
 
