@@ -49,42 +49,74 @@ being modified.
 #### Obtaining LAMMPS source code
 
 The following three commands will clone the stable branch of LAMMPS from version
-[29 Aug 2024, update 4](https://github.com/lammps/lammps/releases/tag/stable_29Aug2024_update4).
+[22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3).
 This is the required version for submissions.
 
 ```
     git clone --single-branch --branch stable https://github.com/lammps/lammps.git lammps_src
     cd lammps_src
-    git checkout abfdbec 
+    git checkout stable_22Jul2025_update3
 ```
 
-Kokkos version 4.3.01 is distributed with and used by this LAMMPS version.
+Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
 Results may use this version or any released version of Kokkos that work
 with this version of LAMMPS.
+
+This version of LAMMPS contains a bug that must be patched to allow it to build successfully
+when Kokkos is used. The bug and fix are described in
+[Issue 4837 in the LAMMPS Gihub repository](https://github.com/lammps/lammps/pull/4837).
+
+This is the patch required:
+
+```
+diff --git a/src/KOKKOS/fix_electron_stopping_kokkos.h b/src/KOKKOS/fix_electron_stopping_kokkos.h
+index 911ac06c329..db447210898 100644
+--- a/src/KOKKOS/fix_electron_stopping_kokkos.h
++++ b/src/KOKKOS/fix_electron_stopping_kokkos.h
+@@ -59,7 +59,7 @@ class FixElectronStoppingKokkos : public FixElectronStopping {
+   typename AT::t_kkacc_1d_3 f;
+   typename AT::t_kkfloat_1d_3 v;
+   typename AT::t_int_1d_randomread type;
+-  typename AT::t_int_1d_randomread tag;
++  typename AT::t_tagint_1d_const tag;
+   typename AT::t_int_1d_const d_mask;
+   typename AT::t_kkfloat_1d_randomread d_mass;
+   typename AT::t_kkfloat_1d_const d_rmass;
+```
+
+and is also included as a file in this repository: [fix_electron_stopping_kokkos.patch](fix_electron_stopping_kokkos.patch)
 
 #### Configuring the LAMMPS build system
 
 LAMMPS uses the CMake tool to configure the build system and generate the makefiles.
 From within the `lammps_src` directory, run the CMake commands
 that is most appropriate for your compute architecture.
-The example below is suitable for generic Linux workstation without a GPU accelerator.
+
+The example below is for the [IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2) system witt four NVIDIA GH200 per node.
 Additional cmake options that may be useful when customizing for other systems/architectures can be found
 in chapter 3 of the [LAMMPS User Guide](https://lammps.sandia.gov/doc/Build.html).
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=$PWD/../install_cpu/ \
-      -D CMAKE_CXX_COMPILER=g++ \
-      -D CMAKE_Fortran_COMPILER=gfortran \
-      -D BUILD_MPI=yes \
-      -D MPI_CXX_COMPILER=mpicxx \
-      -D PKG_USER-OMP=ON \
-      -D PKG_KOKKOS=ON \
-      -D DOWNLOAD_KOKKOS=ON \
-      -D Kokkos_ARCH_FIXME=ON \
-      -D PKG_ML-SNAP=ON \
-      -D CMAKE_POSITION_INDEPENDENT_CODE=ON \
-      -D CMAKE_EXE_FLAGS="-dynamic" \
-      ../cmake
+cmake \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D CMAKE_Fortran_COMPILER=ftn \
+    -D CMAKE_C_COMPILER=cc \
+    -D CMAKE_CXX_COMPILER=CC \
+    -D CMAKE_CXX_FLAGS="-DCUDA_PROXY -fPIC" \
+    -D BUILD_MPI=yes \
+    -D BUILD_OPENMP=no \
+    -D LAMMPS_EXCEPTIONS=on \
+    -D BUILD_SHARED_LIBS=on \
+    -D PKG_KOKKOS=yes -D Kokkos_ARCH_HOPPER90=ON -D Kokkos_ENABLE_CUDA=yes -D FFT_KOKKOS=CUFFT \
+    -D CUDPP_OPT=no -D CUDA_MPS_SUPPORT=yes -D CUDA_ENABLE_MULTIARCH=no \
+    -D PKG_MOLECULE=yes \
+    -D PKG_MANYBODY=yes \
+    -D PKG_REPLICA=yes \
+    -D PKG_ML-SNAP=yes \
+    -D PKG_EXTRA-FIX=yes \
+    -D PKG_MPIIO=yes \
+    -D LAMMPS_SIZES=BIGBIG \
+    ../cmake
 ```
 
 #### Building LAMMPS
@@ -95,15 +127,6 @@ The build scripts configure, build and install the lammps library in the repo's 
 make
 make install
 ```
-
-### Spack build
-
-Spack can also be used to build LAMMPS. For example, the
-[Spack environment](https://spack-tutorial.readthedocs.io/en/latest/tutorial_environments.html)
-configuration to build the required version of LAMMPS on the IsambardAI system is available in this
-repository.
-
-- [IsambardAI Spack environment configuration for LAMMPS benchmark](./isambard_ai_spack.yaml)
 
 ## Running the benchmark
 
