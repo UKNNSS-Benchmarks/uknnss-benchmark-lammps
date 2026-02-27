@@ -1,18 +1,68 @@
-
-The following have been reloaded with a version change:
-  1) gcc-native/14.2 => gcc-native/13.2
-
-srun --cpu-bind=socket -n 32 /lus/lfs1aip2/projects/u6cb/software/spack/opt/spack/linux-neoverse_v2/lammps-20240829.4-fqv3r3we72oq5anhkkivy6ayv45xafxi/bin/lmp -k on g 4 -sf kk -pk kokkos newton on neigh half -in common/in.snap.test -var snapdir common/2J8_W.SNAP -var nx 512 -var ny 512 -var nz 512 -var nsteps 100
-LAMMPS (29 Aug 2024 - Update 4)
-KOKKOS mode with Kokkos version 4.7.1 is enabled (src/src/KOKKOS/kokkos.cpp:72)
+LAMMPS (22 Jul 2025 - Update 3)
+KOKKOS mode with Kokkos version 4.7.2 is enabled
   will use up to 4 GPU(s) per node
+WARNING: When using a single thread, the Kokkos Serial backend (i.e. Makefile.kokkos_mpi_only) gives better performance than the OpenMP backend (src/KOKKOS/kokkos.cpp:221)
   using 1 OpenMP thread(s) per MPI task
+package kokkos
+package kokkos newton on neigh half
+# Benchmark SNAP Ta potential
+
+# specify the domain decomposition, if desired
+# Px, Py, Pz determine be the number of MPI processes in each dimension of the process grid
+#processors Px Py Pz
+
+# initialize
+
+variable        nsteps index 100
+variable        a equal 3.1803
+variable	nx index 4
+variable	ny index 4
+variable	nz index 4
+
+units		metal
+
+# generate a BCC lattice
+
+boundary	p p p
+
+lattice         bcc $a origin 0.1 0.1 0.1
+lattice         bcc 3.1803 origin 0.1 0.1 0.1
 Lattice spacing in x,y,z = 3.1803 3.1803 3.1803
+region		box block 0 ${nx} 0 ${ny} 0 ${nz}
+region		box block 0 512 0 ${ny} 0 ${nz}
+region		box block 0 512 0 512 0 ${nz}
+region		box block 0 512 0 512 0 512
+create_box	1 box
 Created orthogonal box = (0 0 0) to (1628.3136 1628.3136 1628.3136)
   2 by 4 by 4 MPI processor grid
+create_atoms	1 box
 Created 268435456 atoms
   using lattice units in orthogonal box = (0 0 0) to (1628.3136 1628.3136 1628.3136)
-  create_atoms CPU = 0.459 seconds
+  create_atoms CPU = 0.407 seconds
+
+mass            1 183.84
+
+# choose potential
+
+include         common/W_snap_wrapper.txt
+# DATE: 2017-02-20 CONTRIBUTOR: Mitchell Wood mitwood@sandia.gov CITATION: Wood, M. A. and Thompson, A. P. "Quantum-Accurate Molecular Dynamics Potential for Tungsten" arXiv:1702.07042 [physics.comp-ph]
+#
+# Definition of SNAP+ZBL potential.
+variable zblcutinner equal 4
+variable zblcutouter equal 4.8
+variable zblz equal 74
+
+# Specify hybrid with SNAP and ZBL
+
+pair_style hybrid/overlay zbl ${zblcutinner} ${zblcutouter} snap
+pair_style hybrid/overlay zbl 4 ${zblcutouter} snap
+pair_style hybrid/overlay zbl 4 4.8 snap
+pair_coeff 1 1 zbl ${zblz} ${zblz}
+pair_coeff 1 1 zbl 74 ${zblz}
+pair_coeff 1 1 zbl 74 74
+pair_coeff * * snap ${snapdir}/W.snapcoeff ${snapdir}/W.snapparam W
+pair_coeff * * snap common/2J8_W.SNAP/W.snapcoeff ${snapdir}/W.snapparam W
+pair_coeff * * snap common/2J8_W.SNAP/W.snapcoeff common/2J8_W.SNAP/W.snapparam W
 SNAP Element = W, Radius 0.5, Weight 1
 SNAP keyword rcutfac 4.87644
 SNAP keyword twojmax 8
@@ -20,7 +70,40 @@ SNAP keyword rfac0 0.99363
 SNAP keyword rmin0 0
 SNAP keyword bzeroflag 1
 SNAP keyword quadraticflag 0
+
+#Nomenclature on the snap files are Element_DakotaID_Year_Month
+
+# output
+
+thermo		50
+thermo_modify   norm yes
+
+# neighbor params
+
+#neighbor        1.0 bin
+neighbor        0.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# jiggle atoms
+
+variable atomjiggle equal 1.0e-3
+displace_atoms all random ${atomjiggle} ${atomjiggle} ${atomjiggle} 87287 units box
+displace_atoms all random 0.001 ${atomjiggle} ${atomjiggle} 87287 units box
+displace_atoms all random 0.001 0.001 ${atomjiggle} 87287 units box
+displace_atoms all random 0.001 0.001 0.001 87287 units box
 Displacing atoms ...
+
+# run NVT MD
+# 1/2 fmsec timestep
+# coupling constant = 50 steps
+
+velocity        all create 800.0 4928459 loop local
+timestep        0.5e-3
+fix             1 all nve
+fix             2 all langevin 800.0 800.0 0.025 398928
+
+run             ${nsteps}
+run             100
 Neighbor list info ...
   update: every = 1 steps, delay = 0 steps, check = yes
   max neighbors/atom: 2000, page size: 100000
@@ -38,41 +121,38 @@ Neighbor list info ...
       pair build: full/bin/kk/device
       stencil: full/bin/3d
       bin: kk/device
-Setting up Verlet run ...
-  Unit style    : metal
-  Current step  : 0
-  Time step     : 0.0005
-Per MPI rank memory allocation (min/avg/max) = 8711 | 8711 | 8711 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 5191 | 5191 | 5191 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
          0   800           -8.909105       0             -8.8056969      5102.6164    
-        50   650.70576     -8.8725404      0             -8.7884301      11546.405    
-       100   656.95192     -8.8316582      0             -8.7467405      20358.992    
-Loop time of 229.092 on 32 procs for 100 steps with 268435456 atoms
+        50   650.70437     -8.8725404      0             -8.7884303      11546.412    
+       100   656.92419     -8.831659       0             -8.7467448      20358.865    
+Loop time of 139.099 on 32 procs for 100 steps with 268435456 atoms
 
-Performance: 0.019 ns/day, 1272.734 hours/ns, 0.437 timesteps/s, 117.174 Matom-step/s
-100.0% CPU use with 32 MPI tasks x 1 OpenMP threads
+Performance: 0.031 ns/day, 772.772 hours/ns, 0.719 timesteps/s, 192.982 Matom-step/s
+99.8% CPU use with 32 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 219.72     | 221.52     | 226.99     |   9.1 | 96.69
-Neigh   | 1.3744     | 1.3885     | 1.44       |   1.0 |  0.61
-Comm    | 0.54995    | 6.0637     | 7.8821     |  55.1 |  2.65
-Output  | 0.00059512 | 0.0029353  | 0.0033802  |   1.2 |  0.00
-Modify  | 0.024364   | 0.024722   | 0.026304   |   0.4 |  0.01
-Other   |            | 0.09187    |            |       |  0.04
+Pair    | 131.45     | 132.99     | 137.03     |   9.6 | 95.61
+Neigh   | 1.3847     | 1.4076     | 1.501      |   1.8 |  1.01
+Comm    | 0.44991    | 4.5851     | 6.146      |  52.8 |  3.30
+Output  | 0.0020829  | 0.0053802  | 0.0059156  |   1.1 |  0.00
+Modify  | 0.024463   | 0.024749   | 0.027269   |   0.3 |  0.02
+Other   |            | 0.08853    |            |       |  0.06
 
 Nlocal:    8.38861e+06 ave 8.38861e+06 max 8.38861e+06 min
 Histogram: 32 0 0 0 0 0 0 0 0 0
-Nghost:         500795 ave      500799 max      500791 min
-Histogram: 1 3 2 8 0 5 6 3 0 4
-Neighs:    1.09052e+08 ave 1.09053e+08 max 1.09051e+08 min
-Histogram: 4 4 4 2 4 5 2 1 3 3
+Nghost:         500795 ave      500801 max      500791 min
+Histogram: 1 3 4 6 6 4 4 1 1 2
+Neighs:    1.09052e+08 ave 1.09054e+08 max  1.0905e+08 min
+Histogram: 3 3 3 8 2 4 1 6 1 1
 FullNghs:  2.18104e+08 ave 2.18104e+08 max 2.18104e+08 min
-Histogram: 1 0 2 5 3 7 6 3 3 2
+Histogram: 2 5 7 3 4 6 1 1 1 2
 
-Total # of neighbors = 6.9793202e+09
+Total # of neighbors = 6.9793203e+09
 Ave neighs/atom = 25.999994
 Neighbor list builds = 100
 Dangerous builds = 100
-Total wall time: 0:03:54
+
+Total wall time: 0:02:23
