@@ -22,35 +22,23 @@ Stable
 
 - Andy Turner
 
-## Overview
+**Important:** Please do not contact the benchmark maintainers directly with any questions. All questions on the benchmark must be submitted via the procurement response mechanism.
 
-### Software
+## Software
 
 [https://github.com/lammps/lammps](https://github.com/lammps/lammps)
 
 ## Building the benchmark
 
-### Permitted modifications
+Important: All results submitted should be based on the following repository commits:
 
-#### Baseline build
+- LAMMPS repository: [22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3)
 
-For the baseline run the only permitted modifications allowed are those that
-modify the LAMMPS or Kokkos source code to resolve unavoidable compilation or
-runtime errors.
+Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
+Results may use this version or any released version of Kokkos that work
+with this version of LAMMPS.
 
-#### Optimised build
-
-Any modifications to the source code are allowed as long as they are able to be provided
-back to the community under the same licence as is used for the software package that is
-being modified.
-
-### Manual build
-
-#### Obtaining LAMMPS source code
-
-The following three commands will clone the stable branch of LAMMPS from version
-[22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3).
-This is the required version for submissions.
+The following three commands will clone the required version
 
 ```
     git clone --single-branch --branch stable https://github.com/lammps/lammps.git lammps_src
@@ -58,11 +46,15 @@ This is the required version for submissions.
     git checkout stable_22Jul2025_update3
 ```
 
-Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
-Results may use this version or any released version of Kokkos that work
-with this version of LAMMPS.
+### Baseline build
 
-This version of LAMMPS contains a bug that must be patched to allow it to build successfully
+For the baseline run the only permitted modifications allowed are those that
+modify the LAMMPS or Kokkos source code to resolve unavoidable compilation or
+runtime errors.
+
+#### Required LAMMPS patch
+
+The required version of LAMMPS contains a bug that must be patched to allow it to build successfully
 when Kokkos is used. The bug and fix are described in
 [Issue 4837 in the LAMMPS Gihub repository](https://github.com/lammps/lammps/pull/4837).
 
@@ -86,17 +78,24 @@ index 911ac06c329..db447210898 100644
 
 and is also included as a file in this repository: [fix_electron_stopping_kokkos.patch](fix_electron_stopping_kokkos.patch)
 
-#### Configuring the LAMMPS build system
+### Optimised build
 
-LAMMPS uses the CMake tool to configure the build system and generate the makefiles.
-From within the `lammps_src` directory, run the CMake commands
-that is most appropriate for your compute architecture.
+Any modifications to the source code are allowed as long as they are able to be provided
+back to the community under the same licence as is used for the software package that is
+being modified. Any submitted benchmark must clearly point to a publicly visible pull/merge request issued by the benchmarking team that contains all changes, i.e. the same (altered) code base as to be used for all benchmark runs.
+
+The assessment team furthermore appreciates a description of any changes implemented by the benchmarking team.
+
+### Build instructions
+
+Detailed build instructions can be found in the [LAMMPS Documentation](https://lammps.sandia.gov/doc/Build.html).
 
 The example below is for the [IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2) system witt four NVIDIA GH200 per node.
-Additional cmake options that may be useful when customizing for other systems/architectures can be found
-in chapter 3 of the [LAMMPS User Guide](https://lammps.sandia.gov/doc/Build.html).
 
 ```
+mkdir _build
+cd _build
+
 cmake \
     -D CMAKE_BUILD_TYPE=Release \
     -D CMAKE_Fortran_COMPILER=ftn \
@@ -117,23 +116,16 @@ cmake \
     -D PKG_MPIIO=yes \
     -D LAMMPS_SIZES=BIGBIG \
     ../cmake
-```
 
-#### Building LAMMPS
-
-The build scripts configure, build and install the lammps library in the repo's main directory path. The following commands will compile LAMMPS and install the executable at `lammps_src/install_<ARCH>/bin/lmp`.
-
-```
-make
-make install
+make -j8
+make -j8 install
 ```
 
 ## Running the benchmark
 
 Input files and batch scripts for seven (7) problem sizes are provided in the benchmarks directory.
 Responses should provide results (measured or projected) for the "target" problem size.
-Reference values from [AIRR IsambardAI system](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2) were evaluated using the "reference" problem size.
-Other problem sizes  have been provided as a convenience to facilitate profiling at different
+Other problem sizes have been provided as a convenience to facilitate profiling at different
 scales (e.g. socket, node, blade or rack), and extrapolation to larger sizes.
 
 This collection of problems form a weak scaling series where each successively larger problem
@@ -159,14 +151,6 @@ Each problem has its own subdirectory within the benchmarks directory.
 Within those directories, the `run_<size>_IsambardAI.sh` script shows
 how the jobs were executed on IsambardAI. 
 
-### Required tests
-
-- **Target configuration:** There is *no minimum GPU/GCD count* for the LAMMPS benchmark.
-- **Reference FoM:** The reference FoM is from the IsambardAI system using 2048 GH200 GPU (512 nodes): **19.0 s**.
-
-The projected FoM submitted must give at least the same performance 
-as the reference value.
-
 ### Parallel decomposition - permitted input changes
 
 LAMMPS uses a 3-D spatial domain decomposition to distribute atoms among MPI processes.
@@ -183,21 +167,6 @@ This command requires three integer parameters that correspond to the x,y,z dime
 the process grid. Changes to `processors` may require updates to the job submission script
 so that the correct number of MPI processes is started. Refer to the LAMMPS documentation
 for more information about the [`processors` command](https://docs.lammps.org/processors.html).
-
-### Job submission
-
-The essential steps are to
-
-1. add a link to the data that are common to all problem sizes: `ln -s ../../common`
-2. load the size-specific simulation parameters into the BENCH_SPEC variable: `source <size>_spec.txt`
-3. run the job: `srun -n #ranks  /path/to/lammps/lmp  <lammps_options>  ${BENCH_SPEC}`
-
-### Command-line arguments
-
-The recommended lammps_options for IsmabardAI GPU system (and similar systems) are:
-`-k on g $gpus_per_node -sf kk -pk kokkos newton on neigh half` 
-
-where `$gpus-per-node` represents the number of GPU/GCD per node.
 
 ### Numerical reproducibility
 
@@ -218,9 +187,22 @@ the input file (`in.snap.test`) as follows:
 > fix             2 all langevin   0.0   0.0 0.025 398928
 ```
 
+### Benchmark execution
+
+The essential steps are to
+
+1. add a link to the data that are common to all problem sizes: `ln -s ../../common`
+2. load the size-specific simulation parameters into the BENCH_SPEC variable: `source <size>_spec.txt`
+3. run the job: `srun -n #ranks  /path/to/lammps/lmp  <lammps_options>  ${BENCH_SPEC}`
+
+The recommended lammps_options for IsmabardAI GPU system (and similar systems) are:
+`-k on g $gpus_per_node -sf kk -pk kokkos newton on neigh half` 
+
+where `$gpus-per-node` represents the number of GPU/GCD per node.
+
 ## Results
 
-### Correctness & Timing 
+### Correctness results
 
 Correctness can be verified using the `benchmarks/validate.py` script,
 which compares the total energy per unit cell after 100 time-steps
@@ -243,6 +225,7 @@ For example:
 | Validation: PASSED
 | BenchmarkTime (sec): 3.14565
 ```
+### Performance results
 
 In addition, `validate.py` will also print the BenchmarkTime,
 which is the sole performance measurement for the benchmark.
@@ -257,7 +240,15 @@ To be a valid FoM, the following conditions must be met:
 - The LAMMPS input files must not be modified except for permitted
   addition of the `processors` command as described above
 
-### Reference Performance on IsambardAI
+### Required data
+
+- **Target configuration:** There is *no minimum GPU/GCD count* for the LAMMPS benchmark.
+- **Reference FoM:** The reference FoM is from the IsambardAI system using 2048 GH200 GPU (512 nodes): **19.0 s**.
+
+The projected FoM submitted must give at least the same performance 
+as the reference value.
+
+### Example performance data
 
 The sample data in the table below are measured BencharkTime from the IsambardAI GPU system.
 IsambardAI's GPU nodes each have four NVIDIA GH200 superchips;
@@ -285,7 +276,7 @@ on the target system must not exceed this value.
 
 ## Reporting Results
 
-The offeror should provide copies of:
+The bidder should provide copies of:
 
 - Details of any modifications made to the LAMMPS or Kokkos source code
 - The compilation process and configuration settings used for the benchmark results - 
