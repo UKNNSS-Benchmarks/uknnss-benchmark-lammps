@@ -198,7 +198,9 @@ The essential steps are to
 The recommended lammps_options for IsmabardAI GPU system (and similar systems) are:
 `-k on g $gpus_per_node -sf kk -pk kokkos newton on neigh half` 
 
-where `$gpus-per-node` represents the number of GPU/GCD per node.
+where `$gpus-per-node` represents the number of GPU/GCD per node. However, bidders are
+allowed to modify Kokkos options to achieve best performance in both the baseline and
+optimised results.
 
 ## Results
 
@@ -242,7 +244,7 @@ To be a valid FoM, the following conditions must be met:
 
 ### Required data
 
-- **Target configuration:** There is *no minimum GPU/GCD count* for the LAMMPS benchmark.
+- **Target configuration:** There is *no minimum GPU count* for the LAMMPS benchmark.
 - **Reference FoM:** The reference FoM is from the IsambardAI system using 2048 GH200 GPU (512 nodes): **19.0 s**.
 
 The projected FoM submitted must give at least the same performance 
