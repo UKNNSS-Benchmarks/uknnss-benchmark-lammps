@@ -218,11 +218,27 @@ To be a valid FoM, the following conditions must be met:
 
 ### Required data
 
-- **Target configuration:** There is *no minimum GPU count* for the LAMMPS benchmark.
-- **Reference FoM:** The reference FoM is from the IsambardAI system using 2048 GH200 GPU (512 nodes): **19.0 s**.
+Data should be provided to complete the following table.  Optionally, if partitions
+with different hardware (e.g. processor/GPU type, interconnect) are provided, then the
+"target" benchmark size should also be run on the maximum possible size in each
+partition and the results reported in the same format as the table below.
 
-The projected FoM submitted must give at least the same performance 
-as the reference value.
+In all cases, the bidder is free to choose the number of MPI processes per GPU
+that gives the best performance for that case.
+
+ Size      |  # GPU   | # MPI per GPU | Baseline BenchmarkTime (sec) | Optimised BenchmarkTime (sec) |
+| ----      | ---------: | ------------------: | ------------------: |
+| nano      |          1 |      |      |      |
+| micro     |          1 |      |      |      |
+| tiny      |          4 |      |      |      |
+| small     |          4 |      |      |      |
+| medium    |         32 |      |      |      |
+| reference |        128 |      |      |      |
+| reference |        256 |      |      |      |
+| reference |        512 |      |      |      |
+| reference |       1024 |      |      |      |
+| reference |       2048 |      |      |      |
+| target | (Choose #GPU for best performance) |      |      |      |
 
 ### Example performance data
 
@@ -232,23 +248,18 @@ GPU jobs used four MPI processes per node, each with one GPU and 72 cores.
 The upper rows of the table describe performance change as the problem size increases.
 Lower rows describe the strong-scaling performance of LAMMPS when running the reference problem.
 
-| Size      |  # GH200   | BenchmarkTime (sec) |
-| ----      | ---------: | ------------------: |
-| nano      |          1 |      1.1  |
-| micro     |          1 |      8.5  |
-| tiny      |          4 |     17.1  |
-| small     |          4 |    137.3  |
-| medium    |         32 |    139.1  |
-| reference |        128 |    276.6  |
-| reference |        256 |    140.0  |
-| reference |        512 |     70.8  |
-| reference |       1024 |     36.5  |
-| reference |       2048 |     19.0* |
-
-The reference time was determined
-by running the reference problem on 1024 IsambardAI GH200 (128 GPU nodes)
-and is marked by a *. The projected BenchmarkTime for the target problem
-on the target system must not exceed this value.
+| Size      |  # GH200   | # MPI per GPU | BenchmarkTime (sec) |
+| ----      | ---------: | ------------------: | ------------------: |
+| nano      |          1 |  1 |     1.1  |
+| micro     |          1 |  1 |       8.5  |
+| tiny      |          4 |  1 |      17.1  |
+| small     |          4 |  1 |     137.3  |
+| medium    |         32 |  1 |     139.1  |
+| reference |        128 |  1 |     276.6  |
+| reference |        256 |  1 |     140.0  |
+| reference |        512 |  1 |      70.8  |
+| reference |       1024 |  1 |      36.5  |
+| reference |       2048 |  1 |      19.0  |
 
 ## Reporting Results
 
