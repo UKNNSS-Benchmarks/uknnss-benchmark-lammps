@@ -225,8 +225,8 @@ partition and the results reported in the same format as the table below.
 In all cases, the bidder is free to choose the number of MPI processes per GPU
 that gives the best performance for that case.
 
- Size      |  # GPU   | # MPI per GPU | Baseline BenchmarkTime (sec) | Optimised BenchmarkTime (sec) |
-| ----      | ---------: | ------------------: | ------------------: |
+| Size      |  # GPU   | # MPI per GPU | Baseline BenchmarkTime (sec) | Optimised BenchmarkTime (sec) |
+| ----      | ---------: | ---------: | ------------------: | ------------------: |
 | nano      |          1 |      |      |      |
 | micro     |          1 |      |      |      |
 | tiny      |          4 |      |      |      |
