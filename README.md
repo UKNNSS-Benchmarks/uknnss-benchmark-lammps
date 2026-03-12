@@ -247,7 +247,7 @@ GPU jobs used four MPI processes per node, each with one GPU and 72 cores.
 The upper rows of the table describe performance change as the problem size increases.
 Lower rows describe the strong-scaling performance of LAMMPS when running the reference problem.
 
-| Size      |  # GH200   | # MPI per GPU | BenchmarkTime (sec) |
+| Size      |  # GPU   | # MPI per GPU | BenchmarkTime (sec) |
 | ----      | ---------: | ------------------: | ------------------: |
 | nano      |          1 |  1 |     1.1  |
 | micro     |          1 |  1 |       8.5  |
