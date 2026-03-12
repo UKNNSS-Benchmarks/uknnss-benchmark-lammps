@@ -98,9 +98,8 @@ As an example, we provide manual instructions for building LAMMPS on
 ## Running the benchmark
 
 Input files and batch scripts for seven (7) problem sizes are provided in the benchmarks directory.
-Responses should provide results (measured or projected) for the "target" problem size.
-Other problem sizes have been provided as a convenience to facilitate profiling at different
-scales (e.g. socket, node, blade or rack), and extrapolation to larger sizes.
+Responses should provide results (measured or projected) as described in the "Required data"
+section below.
 
 This collection of problems form a weak scaling series where each successively larger problem
 simulates eight times as many atoms as the previous one. Computational requirements are expected
@@ -238,7 +237,7 @@ that gives the best performance for that case.
 | reference |        512 |      |      |      |
 | reference |       1024 |      |      |      |
 | reference |       2048 |      |      |      |
-| target | (Choose #GPU for best performance) |      |      |      |
+| target | (Choose # GPU for best performance) |      |      |      |
 
 ### Example performance data
 
