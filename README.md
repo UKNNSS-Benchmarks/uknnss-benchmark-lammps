@@ -3,11 +3,6 @@
 This repository contains information on the LAMMPS benchmark for the UK NNSS
 procurement. 
 
-This benchmark was originally part of the
-[NERSC-10 Benchmark Suite](https://www.nersc.gov/systems/nersc-10/benchmarks).
-Changes have been made to the original specification to match onto requirements
-for the UK NNSS procurement.
-
 ## Benchmark Overview
 
 A fundamental challenge for molecular dynamics (MD) simulation is to propagate the dynamics for a sufficiently long simulated time to sample all of the relevant molecular configurations.  Historical MD workflows have therefore consisted of long-running jobs (or sequences of jobs), where each time-step may be accelerated by disributing atoms across parallel processing units, but the series of time-steps progresses sequentially. Recent advances in MD sampling effectively provide routes to parallelise the time dimension of the simulation as well.  
@@ -22,21 +17,26 @@ Stable
 
 - Andy Turner
 
-**Important:** Please do not contact the benchmark maintainers directly with any questions. All questions on the benchmark must be submitted via the procurement response mechanism.
+>**Important:** Please do not contact the benchmark maintainers directly with any questions. All questions on the benchmark must be submitted via the procurement response mechanism.
 
 ## Software
 
-[https://github.com/lammps/lammps](https://github.com/lammps/lammps)
+Git repository: [https://github.com/lammps/lammps](https://github.com/lammps/lammps)
 
-## Building the benchmark
-
-Important: All results submitted should be based on the following repository commits:
-
-- LAMMPS repository: [22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3)
+> **Important**: All results submitted should be based on the following repos
+>
+>- LAMMPS repository: [22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3)
 
 Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
-Results may use this version or any released version of Kokkos that work
+Results may use this version or any released version of Kokkos that works
 with this version of LAMMPS.
+
+> **NOTE:** This benchmark was originally part of the
+[NERSC-10 Benchmark Suite](https://www.nersc.gov/systems/nersc-10/benchmarks).
+Changes have been made to the original specification to align with the requirements of the UK NNSS procurement.
+
+
+## Building the benchmark
 
 The following three commands will clone the required version
 
@@ -46,11 +46,15 @@ The following three commands will clone the required version
     git checkout stable_22Jul2025_update3
 ```
 
-### Baseline build
+Detailed build instructions can be found in the [LAMMPS Documentation](https://lammps.sandia.gov/doc/Build.html).
 
-For the baseline run the only permitted modifications allowed are those that
-modify the LAMMPS or Kokkos source code to resolve unavoidable compilation or
-runtime errors.
+As an example, we provide manual instructions for building LAMMPS on
+[IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2).
+
+- [Building LAMMPS on IsambardAI](build_isambardai.md)
+
+
+### Pre-approved code modifications
 
 #### Required LAMMPS patch
 
@@ -78,22 +82,7 @@ index 911ac06c329..db447210898 100644
 
 and is also included as a file in this repository: [fix_electron_stopping_kokkos.patch](fix_electron_stopping_kokkos.patch)
 
-### Optimised build
 
-Any modifications to the source code are allowed as long as they are able to be provided
-back to the community under the same licence as is used for the software package that is
-being modified. Any submitted benchmark must clearly point to a publicly visible pull/merge request issued by the benchmarking team that contains all changes, i.e. the same (altered) code base as to be used for all benchmark runs.
-
-The assessment team furthermore appreciates a description of any changes implemented by the benchmarking team.
-
-### Build instructions
-
-Detailed build instructions can be found in the [LAMMPS Documentation](https://lammps.sandia.gov/doc/Build.html).
-
-As an example, we provide manual instructions for building LAMMPS on
-[IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2).
-
-- [Building LAMMPS on IsambardAI](build_isambardai.md)
 
 ## Running the benchmark
 
@@ -215,31 +204,7 @@ To be a valid FoM, the following conditions must be met:
 - The LAMMPS input files must not be modified except for permitted
   addition of the `processors` command as described above
 
-### Required data
-
-Data should be provided to complete the following table.  Optionally, if partitions
-with different hardware (e.g. processor/GPU type, interconnect) are provided, then the
-"target" benchmark size should also be run on the maximum possible size in each
-partition and the results reported in the same format as the table below.
-
-In all cases, the bidder is free to choose the number of MPI processes per GPU
-that gives the best performance for that case.
-
-| Size      |  # GPU   | # MPI per GPU | Baseline BenchmarkTime (sec) | Optimised BenchmarkTime (sec) |
-| ----      | ---------: | ---------: | ------------------: | ------------------: |
-| nano      |          1 |      |      |      |
-| micro     |          1 |      |      |      |
-| tiny      |          4 |      |      |      |
-| small     |          4 |      |      |      |
-| medium    |         32 |      |      |      |
-| reference |        128 |      |      |      |
-| reference |        256 |      |      |      |
-| reference |        512 |      |      |      |
-| reference |       1024 |      |      |      |
-| reference |       2048 |      |      |      |
-| target | (Choose # GPU for best performance) |      |      |      |
-
-### Example performance data
+### Reference data
 
 The sample data in the table below are measured BencharkTime from the IsambardAI GPU system.
 IsambardAI's GPU nodes each have four NVIDIA GH200 superchips;
@@ -260,19 +225,6 @@ Lower rows describe the strong-scaling performance of LAMMPS when running the re
 | reference |       1024 |  1 |      36.5  |
 | reference |       2048 |  1 |      19.0  |
 
-## Reporting Results
-
-The bidder should provide copies of:
-
-- Details of any modifications made to the LAMMPS or Kokkos source code
-- The compilation process and configuration settings used for the benchmark results - 
-  including makefiles, compiler versions, dependencies used and their versions or
-  Spack environment configuration and lock files if Spack is used
-- The job submission scripts and launch wrapper scripts used (if any)
-- The `in.snap.test` file used
-- The output from the `validate.py` script
-- All standard LAMMPS output files
-- A list of options passed to LAMMPS (if any)
 
 ## License
 
