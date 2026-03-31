@@ -14,16 +14,6 @@ A fundamental challenge for molecular dynamics (MD) simulation is to propagate t
 
 This benchmark consists of a single run of the LAMMPS MD package, which is the performance critical component of such simulation workflows. The benchmark problem simulates the high-pressure BC8 phase of carbon using the Spectral Neighbor Analysis Potential (SNAP). LAMMPS's highly optimized implementation of the SNAP potential was written using the Kokkos portability layer, as described in: https://doi.org/10.1145/3458817.3487400
 
-## Status
-
-Stable
-
-## Maintainers
-
-- Andy Turner
-
-**Important:** Please do not contact the benchmark maintainers directly with any questions. All questions on the benchmark must be submitted via the procurement response mechanism.
-
 ## Software
 
 [https://github.com/lammps/lammps](https://github.com/lammps/lammps)
