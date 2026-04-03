@@ -27,6 +27,13 @@ Git repository: [https://github.com/lammps/lammps](https://github.com/lammps/lam
 >
 >- LAMMPS repository: [22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3)
 
+The following three commands will clone the required version
+
+```
+    git clone --single-branch --branch stable https://github.com/lammps/lammps.git lammps_src
+    git --work-tree=lammps_src checkout stable_22Jul2025_update3
+```
+
 Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
 Results may use this version or any released version of Kokkos that works
 with this version of LAMMPS.
@@ -38,20 +45,36 @@ Changes have been made to the original specification to align with the requireme
 
 ## Building the benchmark
 
-The following three commands will clone the required version
+Compiling the code involves
 
-```
-    git clone --single-branch --branch stable https://github.com/lammps/lammps.git lammps_src
-    cd lammps_src
-    git checkout stable_22Jul2025_update3
-```
+1. Configuring the build using CMake:
+   ```
+   cmake -S lammps_src/cmake -B build \
+      -D CMAKE_INSTALL_PREFIX=$(pwd)/install \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D BUILD_MPI=yes \
+      -D PKG_SNAP=yes \
+      -D PKG_GPU=no \
+      -D PKG_KOKKOS=yes \
+      -D PKG_ML-SNAP=ON \
+      -D CMAKE_CXX_COMPILER=hipcc \
+      -D Kokkos_ENABLE_HIP=yes \
+      -D Kokkos_ARCH_AMD_GFX90A=yes
+   ```
+   modifying the above flags for the target architecture.
+
+2. Build and install the code
+   ```
+   make -C build -j
+   make -C build install
+   ```
 
 Detailed build instructions can be found in the [LAMMPS Documentation](https://lammps.sandia.gov/doc/Build.html).
 
-As an example, we provide manual instructions for building LAMMPS on
-[IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2).
-
-- [Building LAMMPS on IsambardAI](build_isambardai.md)
+### Example build scripts
+Example build scripts are provided for:
+- NVIDIA GH200 system ([IsambardAI](https://docs.isambard.ac.uk/specs/#system-specifications-isambard-ai-phase-2)): [build_lammps_GH200-IsambardAI.sh](build_lammps_GH200-IsambardAI.sh)
+- AMD MI210 system: [build_lammps_MI210.sh](build_lammps_MI210.sh)
 
 
 ### Pre-approved code modifications
