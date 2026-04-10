@@ -230,8 +230,8 @@ To be a valid FoM, the following conditions must be met:
 ### Reference data
 
 The sample data in the table below are measured BencharkTime from the IsambardAI GPU system.
-IsambardAI combines four NVIDIA GH200 superchips (nodes) into one supernode.
-Therefore, the GPU jobs used four MPI processes per supernode, each with one GPU and 72 cores.
+IsambardAI combines four NVIDIA GH200 superchips into one node.
+Therefore, the GPU jobs used four MPI processes per supernode, each with one GPU and 72 cores, unless specified otherwise.
 The upper rows of the table describe performance change as the problem size increases.
 Lower rows describe the strong-scaling performance of LAMMPS when running the reference problem.
 
