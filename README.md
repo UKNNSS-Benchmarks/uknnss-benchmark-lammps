@@ -3,30 +3,21 @@
 This repository contains information on the LAMMPS benchmark for the UK NNSS
 procurement. 
 
+> [!IMPORTANT]
+> Please do not contact the benchmark or code maintainers directly with any questions. All questions must be submitted via the procurement response mechanism.
+
 ## Benchmark Overview
 
 A fundamental challenge for molecular dynamics (MD) simulation is to propagate the dynamics for a sufficiently long simulated time to sample all of the relevant molecular configurations.  Historical MD workflows have therefore consisted of long-running jobs (or sequences of jobs), where each time-step may be accelerated by disributing atoms across parallel processing units, but the series of time-steps progresses sequentially. Recent advances in MD sampling effectively provide routes to parallelise the time dimension of the simulation as well.  
 
 This benchmark consists of a single run of the LAMMPS MD package, which is the performance critical component of such simulation workflows. The benchmark problem simulates the high-pressure BC8 phase of carbon using the Spectral Neighbor Analysis Potential (SNAP). LAMMPS's highly optimized implementation of the SNAP potential was written using the Kokkos portability layer, as described in: https://doi.org/10.1145/3458817.3487400
 
-<<<<<<< HEAD
-## Status
-
-Stable
-
-## Maintainers
-
-- Andy Turner
-
->**Important:** Please do not contact the benchmark maintainers directly with any questions. All questions on the benchmark must be submitted via the procurement response mechanism.
-
-=======
->>>>>>> main
 ## Software
 
 Git repository: [https://github.com/lammps/lammps](https://github.com/lammps/lammps)
 
-> **Important**: All results submitted should be based on the following repos
+> [!CAUTION]
+> All results submitted should be based on the following repos
 >
 >- LAMMPS repository: [22 Jul 2025, update 3](https://github.com/lammps/lammps/releases/tag/stable_22Jul2025_update3)
 
@@ -41,9 +32,10 @@ Kokkos version 4.6.02 is distributed with and used by this LAMMPS version.
 Results may use this version or any released version of Kokkos that works
 with this version of LAMMPS.
 
-> **NOTE:** This benchmark was originally part of the
+> [!NOTE]
+> This benchmark was originally part of the
 [NERSC-10 Benchmark Suite](https://www.nersc.gov/systems/nersc-10/benchmarks).
-Changes have been made to the original specification to align with the requirements of the UK NNSS procurement.
+> Changes have been made to the original specification to align with the requirements of the UK NNSS procurement.
 
 
 ## Building the benchmark
