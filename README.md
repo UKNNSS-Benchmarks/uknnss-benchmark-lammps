@@ -224,15 +224,16 @@ To be a valid FoM, the following conditions must be met:
 
 ### Reference data
 
+#### IsambardAI (GH200)
 The sample data in the table below are measured BencharkTime from the IsambardAI GPU system.
 IsambardAI combines four NVIDIA GH200 superchips into one node.
 Therefore, the GPU jobs used four MPI processes per supernode, each with one GPU and 72 cores, unless specified otherwise.
 The upper rows of the table describe performance change as the problem size increases.
 Lower rows describe the strong-scaling performance of LAMMPS when running the reference problem.
 
-| Size      |  # GPU   | # MPI per GPU | BenchmarkTime (sec) |
+| Size      |  # GPU     | # MPI per GPU   | BenchmarkTime (sec) |
 | ----      | ---------: | ------------------: | ------------------: |
-| nano      |          1 |  1 |     1.1  |
+| nano      |          1 |  1 |     1.1    |
 | micro     |          1 |  1 |       8.5  |
 | tiny      |          4 |  1 |      17.1  |
 | small     |          4 |  1 |     137.3  |
@@ -243,6 +244,13 @@ Lower rows describe the strong-scaling performance of LAMMPS when running the re
 | reference |       1024 |  1 |      36.5  |
 | reference |       2048 |  1 |      19.0  |
 
+#### Hunter (Mi300A)
+
+| Size      |  # GPU     | # MPI per GPU   | BenchmarkTime (sec) |
+| ----      | ---------: | ------------------: | ------------------: |
+| reference |         32 | 1 | 2450.93 |
+| reference |         64 | 1 | 1216.95 |
+| reference |        128 | 1 | 614.08 |
 
 ## License
 
