@@ -105,8 +105,6 @@ and is also included as a file in this repository: [fix_electron_stopping_kokkos
 ## Running the benchmark
 
 Input files and batch scripts for seven (7) problem sizes are provided in the benchmarks directory.
-Responses should provide results (measured or projected) as described in the "Required data"
-section below.
 
 This collection of problems form a weak scaling series where each successively larger problem
 simulates eight times as many atoms as the previous one. Computational requirements are expected
